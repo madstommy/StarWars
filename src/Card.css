@@ -1,0 +1,16 @@
+.mainCard{
+    background-color: black;
+    color:whitesmoke;
+    width: 20%;
+    font-size: 0.8em;
+    padding: 10px;
+    border: 2px solid yellow;
+    border-radius: 10px;
+    text-align:center;
+    text-justify: distribute;
+    margin: auto;
+}
+
+ul{
+    padding: 0;
+}
