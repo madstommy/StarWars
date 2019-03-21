@@ -1,0 +1,7 @@
+.gridOfResults{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-rows: 1fr;
+    justify-items: center;
+    grid-gap: 10px;
+}

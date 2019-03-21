@@ -1,86 +1,99 @@
-import React, { Component } from 'react';
-import './Card.css'
+import React, { Component } from "react";
+import "./Card.css";
 
-class Card extends Component{
-    constructor(props){
-        super(props);
-        console.log(this.props);
-        this.state = {
-            url: this.props.url,
+class Card extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      url: this.props.url
+    };
+  }
+
+  componentDidMount() {
+    const getName = async url => {
+      const data = await fetch(url);
+      const info = await data.json();
+      if (info.name === undefined) {
+        return info.title;
+      } else {
+        return info.name;
+      }
+    };
+
+    const getNames = async elements => {
+      const realNames = [];
+      for (let ele of elements) {
+        let e = await getName(ele);
+        realNames.push(e);
+      }
+      return realNames;
+    };
+
+    const fetchInfo = async () => {
+      const data = await fetch(this.props.url);
+      const info = await data.json();
+      const entries = Object.entries(info);
+      for (const [prop, ent] of entries) {
+        if (!Array.isArray(ent)) {
+          this.setState({ [`${this.modifyString(prop)}`]: ent });
+        } else {
+          const names = await getNames(ent);
+          this.setState({ [`${this.modifyString(prop)}`]: names });
         }
-        
-    }
+      }
+    };
 
-    componentDidMount(){
-        const getName = async (url) => {
-            const data = await fetch(url);
-            const info = await data.json();
-            if(info.name === undefined){
-                return info.title;
-            }
-            else{
-                return info.name;
-            }
-       } 
+    fetchInfo();
+  }
 
-       const getNames = async elements => {
-            const realNames = await elements.map( async e => await getName(e));
-            return realNames;
-       }
-        
-        const fetchInfo = async () => {
-            const data = await fetch(this.props.url);
-            const info = await data.json();
-            const entries = Object.entries(info);
-            for(const [prop, ent] of entries){
-                if(!Array.isArray(ent)){
-                    this.setState({[`${prop}`]: ent});
-                } else {
-                    const names = await getNames(ent);
-                    this.setState({[`${prop}`]: names});
-                }
-            }
-        }
+  modifyString = st => {
+    st = st.charAt(0).toUpperCase() + st.slice(1);
+    st = st.replace(/_/g, " ");
+    return st;
+  };
 
-        
-        fetchInfo();
-    }
-
-  
-
-    render(){
-
-        const entries = Object.entries(this.state);
-        const filtEntries = entries.filter(([prop,ent]) => !(prop.includes('url') || prop.includes('created') || prop.includes('edited')));
-        const cardComponent = [];
-        for( const [prop, ent] of filtEntries){
-            if(!Array.isArray(ent)){
-                cardComponent.push( 
-                <li>{prop}: {ent}</li>
-                )
-            }
-            else{
-                let miniList=[];
-                for(const element of ent){
-                    element.then(e => {
-                        miniList.push(<li>{e}</li>);
-                    });
-                }
-
-                console.log(miniList);
-                console.log(cardComponent);
-                cardComponent.push(
-                <li>{prop}:<div>{miniList}</div></li>
-                );
-            }
-        }
-
-        return(
-        <div className="mainCard">
-            <ul>{cardComponent}</ul>
-        </div>
+  render() {
+    const entries = Object.entries(this.state);
+    const filtEntries = entries.filter(
+      ([prop, ent]) =>
+        !(
+          prop.toLowerCase().includes("url") ||
+          prop.toLowerCase().includes("created") ||
+          prop.toLowerCase().includes("edited") ||
+          prop.toLowerCase().includes("homeworld")
+        )
+    );
+    const cardComponent = [];
+    let i = 0;
+    for (const [prop, ent] of filtEntries) {
+      if (!Array.isArray(ent)) {
+        cardComponent.push(
+          <li key={i++}>
+            {prop}: {ent}
+          </li>
         );
+        i++;
+      } else if(ent.length>0){
+        let miniList = [];
+        miniList = ent.map(ele => <li key={i++}>{ele}</li>);
+        i++;
+        cardComponent.push(
+          <ul key={i++}>
+            <li key={i++}>
+              <span className="listBegin">{prop}</span>
+              <ul>{miniList}</ul>
+            </li>
+          </ul>
+        );
+      }
     }
+
+    return (
+      <div className="mainCard">
+        <ul>{cardComponent}</ul>
+      </div>
+    );
+  }
 }
 
 export default Card;

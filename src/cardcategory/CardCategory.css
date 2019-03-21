@@ -1,0 +1,13 @@
+.containerBox{
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    width: 300px;
+    padding: 0;
+    align-items: center;
+    overflow-y: scroll;
+}
+
+h1{
+    text-align: center;
+}
