@@ -1,54 +1,62 @@
 import React, { Component } from "react";
 import "./Card.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 class Card extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: this.props.url,
       isMounted: false
-    };
-  }
-
-  componentDidMount() {
-    const getName = async url => {
-      const data = await fetch(url);
-      const info = await data.json();
-      if (info.name === undefined) {
-        return info.title;
-      } else {
-        return info.name;
-      }
-    };
-
-    const getNames = async elements => {
-      const realNames = [];
-      for (let ele of elements) {
-        let e = await getName(ele);
-        realNames.push(e);
-      }
-      return realNames;
-    };
-
-    const fetchInfo = async () => {
-      const data = await fetch(this.props.url);
-      const info = await data.json();
-      const entries = Object.entries(info);
-      for (const [prop, ent] of entries) {
-        if (!Array.isArray(ent)) {
-          this.setState({ [`${this.modifyString(prop)}`]: ent });
-        } else {
-          const names = await getNames(ent);
-          this.setState({ [`${this.modifyString(prop)}`]: names });
-        }
-      }
-      this.setState({isMounted:true});
     };
 
     try{
-      fetchInfo();
+      this.fetchInfo(this.props.url);
     } catch (err){
       console.log(err);
+    }
+  }
+
+  getName = async url => {
+    const data = await fetch(url);
+    const info = await data.json();
+    if (info.name === undefined) {
+      return info.title;
+    } else {
+      return info.name;
+    }
+  };
+
+  getNames = async elements => {
+    const realNames = [];
+    for (let ele of elements) {
+      let e = await this.getName(ele);
+      realNames.push(e);
+    }
+    return realNames;
+  };
+
+  fetchInfo = async currentUrl => {
+    if(this.state.isMounted){
+      this.setState({isMounted:false});
+    }
+    const data = await fetch(currentUrl);
+    const info = await data.json();
+    const entries = Object.entries(info);
+    for (const [prop, ent] of entries) {
+      if (!Array.isArray(ent)) {
+        this.setState({ [`${this.modifyString(prop)}`]: ent });
+      } else {
+        const names = await this.getNames(ent);
+        this.setState({ [`${this.modifyString(prop)}`]: names });
+      }
+    }
+    this.setState({isMounted:true});
+  };
+
+  componentWillUpdate(prevProps){
+    if(prevProps.url !== this.props.url){
+      this.fetchInfo(prevProps.url);
     }
   }
 
@@ -103,7 +111,7 @@ class Card extends Component {
       :
       (
         <div className="mainCard">
-          <h1>Loading!</h1>
+          <h1>Loading! <FontAwesomeIcon icon={faSpinner} spin /></h1>
         </div>
       )
     )}

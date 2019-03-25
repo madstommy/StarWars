@@ -14,6 +14,10 @@ class AllResults extends Component {
       <div className="gridOfResults">
         <Cardcategory searchTerm = {this.props.searchTerm} type = 'people'/>
         <Cardcategory searchTerm = {this.props.searchTerm} type = 'planets'/>
+        <Cardcategory searchTerm = {this.props.searchTerm} type = 'species'/>
+        <Cardcategory searchTerm = {this.props.searchTerm} type = 'starships'/>
+        <Cardcategory searchTerm = {this.props.searchTerm} type = 'films'/>
+        <Cardcategory searchTerm = {this.props.searchTerm} type = 'vehicles'/>
       </div>
     );
   }

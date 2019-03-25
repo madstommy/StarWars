@@ -7,7 +7,7 @@ class SearchBox extends Component {
       <div>
           <label  htmlFor="search">Search:  </label>
           <input onChange={onSearchChange} type="text" name="search" id="search"></input>
-          <button onClick={onSearchClick} >Yeehaw</button>
+          <button onClick={onSearchClick} >Search</button>
       </div>
     );
   }

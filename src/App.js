@@ -13,7 +13,6 @@ class App extends Component {
   }
   onSearchClick = () =>{
     this.setState({searchTerm:this.state.input});
-    console.log(this.state.searchTerm);
   }
 
   onSearchChange = event => {
