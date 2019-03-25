@@ -5,7 +5,8 @@ class Card extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: this.props.url
+      url: this.props.url,
+      isMounted: false
     };
   }
 
@@ -41,9 +42,14 @@ class Card extends Component {
           this.setState({ [`${this.modifyString(prop)}`]: names });
         }
       }
+      this.setState({isMounted:true});
     };
 
-    fetchInfo();
+    try{
+      fetchInfo();
+    } catch (err){
+      console.log(err);
+    }
   }
 
   modifyString = st => {
@@ -60,7 +66,8 @@ class Card extends Component {
           prop.toLowerCase().includes("url") ||
           prop.toLowerCase().includes("created") ||
           prop.toLowerCase().includes("edited") ||
-          prop.toLowerCase().includes("homeworld")
+          prop.toLowerCase().includes("homeworld") ||
+          prop.toLowerCase().includes("ismounted")
         )
     );
     const cardComponent = [];
@@ -87,13 +94,19 @@ class Card extends Component {
         );
       }
     }
-
-    return (
-      <div className="mainCard">
-        <ul>{cardComponent}</ul>
-      </div>
-    );
-  }
+    return (this.state.isMounted ? 
+       (
+        <div className="mainCard">
+          <ul>{cardComponent}</ul>
+        </div>
+      )
+      :
+      (
+        <div className="mainCard">
+          <h1>Loading!</h1>
+        </div>
+      )
+    )}
 }
 
 export default Card;

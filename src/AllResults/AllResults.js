@@ -3,11 +3,17 @@ import Cardcategory from '../cardcategory/Cardcategory';
 import './AllResults.css';
 
 class AllResults extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      searchTerm:props.searchTerm
+    }
+  }
   render() {
     return (
       <div className="gridOfResults">
-        <Cardcategory searchTerm = 'a' type = 'people'/>
-        <Cardcategory searchTerm = 'a' type = 'planets'/>
+        <Cardcategory searchTerm = {this.props.searchTerm} type = 'people'/>
+        <Cardcategory searchTerm = {this.props.searchTerm} type = 'planets'/>
       </div>
     );
   }

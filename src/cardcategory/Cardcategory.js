@@ -13,23 +13,30 @@ class Cardcategory extends Component {
   }
 
   componentDidMount() {
-    const url = `https://swapi.co/api/${this.state.type}/?search=${this.state.searchTerm}`;
 
     const createList = async linker => {
       const data = await fetch(linker);
       const info = await data.json()
       const urlList = info.results.map(element => element.url);
-      console.log(urlList);
       this.setState({urlList});
     }
+    
+    const url = `https://swapi.co/api/${this.props.type}/?search=${this.props.searchTerm}`;
+    createList(url)
+    
 
-    createList(url);
+    
   }
+
+  
 
   render() {
     const { urlList, type } = this.state;
+    const url = `https://swapi.co/api/${this.props.type}/?search=${this.props.searchTerm}`;
+    this.createList(url);
+    let i=0;
     const componentList = urlList.map( ele => 
-      <Card type = {type}
+      <Card key={i++} type = {type}
             url = {ele} / >
     )
     return ( <div>
@@ -41,5 +48,4 @@ class Cardcategory extends Component {
     );
   }
 }
-
 export default Cardcategory;
